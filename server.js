@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+require('console.table');
 require('dotenv').config();
 
 const db = mysql.createConnection(
@@ -14,21 +15,21 @@ const db = mysql.createConnection(
 
 function viewEmployee() {
   db.query('SELECT * FROM employee', function (err, results) {
-    console.log(results);
+    console.table(results);
     mainMenu();
   });
 }
 
 function viewDepartment() {
   db.query('SELECT * FROM department', function (err, results) {
-    console.log(results);
+    console.table(results);
     mainMenu();
   });
 }
 
 function viewRole() {
   db.query('SELECT * FROM role', function (err, results) {
-    console.log(results);
+    console.table(results);
     mainMenu();
   });
 }
@@ -50,6 +51,69 @@ function addDepartment() {
   });
 }
 
+function addRole() {
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: "What's the title of the new role?"
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: "What's the salary of the new role?"
+    },
+    {
+      type: 'input',
+      name: 'dept',
+      message: "What's the department ID of the new role?"
+    }
+  ])
+  .then((answers) => {
+    db.query(`INSERT INTO role (title, salary, department_id) 
+    VALUES ("${answers.title}", ${answers.salary}, ${answers.dept})`, 
+    function (err, results) {
+      console.log("New role has been added!");
+      mainMenu();
+    });
+  });
+}
+
+function addEmployee() {
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'first',
+      message: "What's the first name of the new employee?"
+    },
+    {
+      type: 'input',
+      name: 'last',
+      message: "What's the last name of the new employee?"
+    },
+    {
+      type: 'input',
+      name: 'role',
+      message: "What's the role ID of the new employee?"
+    },
+    {
+      type: 'input',
+      name: 'manager',
+      message: "What's the manager ID of the new employee?"
+    }
+  ])
+  .then((answers) => {
+    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    VALUES ("${answers.first}", "${answers.last}", ${answers.role}, ${answers.manager})`, 
+    function (err, results) {
+      console.log("New employee has been added!");
+      mainMenu();
+    });
+  });
+}
+
 function mainMenu() {
   inquirer
   .prompt([
@@ -57,19 +121,19 @@ function mainMenu() {
       type: 'list',
       name: 'view',
       message: 'What do you want to view?',
-      choices: ["Employee", "Role", "Department", "Add Department"],
+      choices: ["View all employees", "View all roles", "View all departments", "Add Department", "Add Role", "Add Employee", "Exit"],
     },
   ])
   .then(answers => {
 
     switch (answers.view) {
-      case 'Employee':
+      case 'View all employees':
         viewEmployee();
         break;
-      case 'Role':
+      case 'View all roles':
         viewRole();
         break;
-      case 'Department':
+      case 'View all departments':
         viewDepartment();
         break;
       case 'Add Department':
@@ -80,6 +144,9 @@ function mainMenu() {
         break;
       case 'Add Employee':
         addEmployee();
+        break;
+      case 'Exit':
+        console.log("Thank you for using our app!");
         break;
       default:
         console.log('Oh oh! Choose again!');
