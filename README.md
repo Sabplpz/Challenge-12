@@ -32,4 +32,4 @@ MIT License
 ## Links
 
 Repo: https://github.com/Sabplpz/EmployerDatabase
-[![alt text](assets/video.png)](https://2u-20.wistia.com/medias/2lnle7xnpk)
+[![alt text](assets/video.png)](https://drive.google.com/file/d/1s1u1x0R4rWkLALDV0gexFD1vmozztC0G/view)
