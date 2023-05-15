@@ -114,6 +114,31 @@ function addEmployee() {
   });
 }
 
+function updateEmployee() {
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'employee',
+      message: "What's the employee ID you want to update?"
+    },
+    {
+      type: 'input',
+      name: 'role',
+      message: "What's the new role ID of the employee?"
+    }
+  ])
+  .then((answers) => {
+    db.query(`UPDATE employee
+    SET role_id = '${answers.role}'
+    WHERE id = ${answers.employee};`, 
+    function (err, results) {
+      console.log("Role has been updated for this employee!");
+      mainMenu();
+    });
+  });
+}
+
 function mainMenu() {
   inquirer
   .prompt([
@@ -121,7 +146,7 @@ function mainMenu() {
       type: 'list',
       name: 'view',
       message: 'What do you want to view?',
-      choices: ["View all employees", "View all roles", "View all departments", "Add Department", "Add Role", "Add Employee", "Exit"],
+      choices: ["View all employees", "View all roles", "View all departments", "Add Department", "Add Role", "Add Employee", "Update employee role", "Exit"],
     },
   ])
   .then(answers => {
@@ -144,6 +169,9 @@ function mainMenu() {
         break;
       case 'Add Employee':
         addEmployee();
+        break;
+      case 'Update employee role':
+        updateEmployee();
         break;
       case 'Exit':
         console.log("Thank you for using our app!");
